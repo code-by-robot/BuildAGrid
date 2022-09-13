@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Group3Project.Models
 {
-    public partial class UserTable
+    public partial class Usertable
     {
         public int Id { get; set; }
         public string? UserId { get; set; }
         public int? BpId { get; set; }
 
-        public virtual BuiltPlant? Bp { get; set; }
+        public virtual Builtplant? Bp { get; set; }
     }
 }

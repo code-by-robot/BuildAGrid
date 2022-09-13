@@ -8,13 +8,13 @@ namespace Group3Project.Controllers
     [ApiController]
     public class BuiltPlantController : ControllerBase
     {
-        EnergyDBContext context = new EnergyDBContext();
+        continuousdbContext context = new continuousdbContext();
 
         //add to sandbox 
         [HttpPost("AddAPlant")]
-        public BuiltPlant AddAPlant(int fuelId, int nameplateCapacity, string userId)
+        public Builtplant AddAPlant(int fuelId, int nameplateCapacity, string userId)
         {
-            BuiltPlant newPlant = new BuiltPlant()
+            Builtplant newPlant = new Builtplant()
             {
 
                 FuelId = fuelId,
@@ -22,47 +22,47 @@ namespace Group3Project.Controllers
                 PowState = false
 
             };
-            context.BuiltPlants.Add(newPlant);
+            context.Builtplants.Add(newPlant);
             context.SaveChanges();
 
-            UserTable table = new UserTable()
+            Usertable table = new Usertable()
             {
                 UserId = userId,
-                BpId = context.BuiltPlants.OrderBy(b => b.Id).Last().Id
+                BpId = context.Builtplants.OrderBy(b => b.Id).Last().Id
             };
-            context.UserTables.Add(table);
+            context.Usertables.Add(table);
             context.SaveChanges();
             return newPlant;
         }
 
         [HttpDelete("DestroyAPlant")]
-        public BuiltPlant DestroyAPlant(int Id)
+        public Builtplant DestroyAPlant(int Id)
         {
-            BuiltPlant removedPlant = context.BuiltPlants.FirstOrDefault(x => x.Id == Id);
-            UserTable removedUT = context.UserTables.FirstOrDefault(x => x.BpId == Id);
-            context.BuiltPlants.Remove(removedPlant);
-            context.UserTables.Remove(removedUT);
+            Builtplant removedPlant = context.Builtplants.FirstOrDefault(x => x.Id == Id);
+            Usertable removedUT = context.Usertables.FirstOrDefault(x => x.BpId == Id);
+            context.Builtplants.Remove(removedPlant);
+            context.Usertables.Remove(removedUT);
             context.SaveChanges();
             return removedPlant;
         }
 
         //to speed this up, we should take in userId here, run GetAllPlants() once to return the user's plants. 
         [HttpGet("GetAllPlants")]
-        public List<BuiltPlant> GetAllPlants()
+        public List<Builtplant> GetAllPlants()
         {
-            return context.BuiltPlants.ToList();
+            return context.Builtplants.ToList();
 
         }
         // post - new object 
         // put - same obj, update fields 
         // patch - take an object, update props, submit them as a NEW entry 
         [HttpPut("ModifyCapacities/{Id}")]
-        public BuiltPlant ModifyCapacities(int Id, int NPC, int AC)
+        public Builtplant ModifyCapacities(int Id, int NPC, int AC)
         {
-            BuiltPlant modifiedPlant = context.BuiltPlants.FirstOrDefault(x => x.Id == Id);
+            Builtplant modifiedPlant = context.Builtplants.FirstOrDefault(x => x.Id == Id);
             modifiedPlant.Npc = NPC;
             modifiedPlant.Ac = AC;
-            context.BuiltPlants.Update(modifiedPlant);
+            context.Builtplants.Update(modifiedPlant);
             context.SaveChanges();
             return modifiedPlant;
 
@@ -70,27 +70,27 @@ namespace Group3Project.Controllers
 
         [HttpPut("FlipPowState")] 
 
-        public BuiltPlant FlipPowState(int Id)
+        public Builtplant FlipPowState(int Id)
         {
-            BuiltPlant turnOn = context.BuiltPlants.FirstOrDefault(x => x.Id == Id);
+            Builtplant turnOn = context.Builtplants.FirstOrDefault(x => x.Id == Id);
             turnOn.PowState = !turnOn.PowState;
-            context.BuiltPlants.Update(turnOn);
+            context.Builtplants.Update(turnOn);
             context.SaveChanges();
             return turnOn;
         }
 
         //or, we could take in user ID here. 
         [HttpGet("PlantAndMore")]
-        public IEnumerable<BuiltPlant> PlantAndMore()
+        public IEnumerable<Builtplant> PlantAndMore()
         {
             // pulling all plants from the database like normal, PlantProp property (fuel) is NULL for all. 
-            List<BuiltPlant> plants = context.BuiltPlants.ToList();
+            List<Builtplant> plants = context.Builtplants.ToList();
 
             //dictionary : pages = fuel type, definition = PlantProp 
-            Dictionary<int, PlantProp> plantsProp = context.PlantProps.ToDictionary(p => p.Id, p => p);
+            Dictionary<int, Plantprop> plantsProp = context.Plantprops.ToDictionary(p => p.Id, p => p);
 
             //go through all plants from database 
-            foreach (BuiltPlant iteratedPlant in plants)
+            foreach (Builtplant iteratedPlant in plants)
             {
                 // isolate the plant we care about (for each loop) 
                 // set plant property 
@@ -100,7 +100,7 @@ namespace Group3Project.Controllers
 
                 if (iteratedPlant.FuelId != null)
                 { //if we CAN get props from a fuel id (if it exists) (which it always will but just in 
-                    PlantProp please = default; //get said fuel props 
+                    Plantprop please = default; //get said fuel props 
                     bool didFindFuel = plantsProp.TryGetValue((int)iteratedPlant.FuelId, out please);
                     if (didFindFuel)
                     {
@@ -112,27 +112,27 @@ namespace Group3Project.Controllers
         }
 
         [HttpGet("PlantAndMoreByUserId/{userId}")]
-        public IEnumerable<BuiltPlant> PlantAndMoreByUserId(string userId)
+        public IEnumerable<Builtplant> PlantAndMoreByUserId(string userId)
         {
             // pulling all plants from the database like normal, PlantProp property (fuel) is NULL for all. 
             
 
-            List<BuiltPlant> results = new List<BuiltPlant>();
+            List<Builtplant> results = new List<Builtplant>();
 
-            List<UserTable> matches = context.UserTables.Where(u => u.UserId == userId).ToList();
+            List<Usertable> matches = context.Usertables.Where(u => u.UserId == userId).ToList();
 
-            foreach(UserTable match in matches)
+            foreach(Usertable match in matches)
             {
-                BuiltPlant builtPlant = context.BuiltPlants.FirstOrDefault(p => p.Id == match.BpId);
+                Builtplant builtPlant = context.Builtplants.FirstOrDefault(p => p.Id == match.BpId);
                 results.Add(builtPlant);
                 
             }
             
             //dictionary : pages = fuel type, definition = PlantProp 
-            Dictionary<int, PlantProp> plantsProp = context.PlantProps.ToDictionary(p => p.Id, p => p);
+            Dictionary<int, Plantprop> plantsProp = context.Plantprops.ToDictionary(p => p.Id, p => p);
 
             //go through all plants from database 
-            foreach (BuiltPlant iteratedPlant in results)
+            foreach (Builtplant iteratedPlant in results)
             {
                 // isolate the plant we care about (for each loop) 
                 // set plant property 
@@ -142,7 +142,7 @@ namespace Group3Project.Controllers
 
                 if (iteratedPlant.FuelId != null)
                 { //if we CAN get props from a fuel id (if it exists) (which it always will but just in 
-                    PlantProp please = default; //get said fuel props 
+                    Plantprop please = default; //get said fuel props 
                     bool didFindFuel = plantsProp.TryGetValue((int)iteratedPlant.FuelId, out please);
                     if (didFindFuel)
                     {

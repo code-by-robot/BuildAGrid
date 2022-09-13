@@ -31,7 +31,7 @@ import { Secret } from './secret';
     ListOfPlantsComponent,
     CalculateCapacityComponent,
     LearnPlantInfoComponent,
-    FactsForNerdsComponent,
+    FactsForNerdsComponent
     
   ],
   imports: [

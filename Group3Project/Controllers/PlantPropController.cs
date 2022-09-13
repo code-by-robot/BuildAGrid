@@ -8,19 +8,19 @@ namespace Group3Project.Controllers
     [ApiController]
     public class PlantPropController : ControllerBase
     {
-        EnergyDBContext context = new EnergyDBContext();
+        continuousdbContext context = new  continuousdbContext();
 
         [HttpGet("GetProps/{id}")]
-        public PlantProp GetProps(int id)
+        public Plantprop GetProps(int id)
         {
-            return context.PlantProps.Where(p => p.Id == id).FirstOrDefault();
+            return context.Plantprops.Where(p => p.Id == id).FirstOrDefault();
 
         }
 
         [HttpGet("GetAllProps")]
-        public List<PlantProp> GetAllProps()
+        public List<Plantprop> GetAllProps()
         {
-            return context.PlantProps.ToList();
+            return context.Plantprops.ToList();
 
         }
     }

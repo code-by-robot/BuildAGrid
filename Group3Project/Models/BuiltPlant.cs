@@ -3,23 +3,22 @@ using System.Collections.Generic;
 
 namespace Group3Project.Models
 {
-    public partial class BuiltPlant
+    public partial class Builtplant
     {
-        public BuiltPlant()
+        public Builtplant()
         {
-            UserTables = new HashSet<UserTable>();
+            Usertables = new HashSet<Usertable>();
         }
 
-        public int Id { get; set; }
         public int? FuelId { get; set; }
         public int? NameplateCapacity { get; set; }
         public bool? PowState { get; set; }
         public int? Npc { get; set; }
         public int? Ac { get; set; }
+        public int Id { get; set; }
 
-        public virtual PlantProp? Fuel { get; set; }
-
+        public virtual Plantprop? Fuel { get; set; }
         [System.Text.Json.Serialization.JsonIgnore]
-        public virtual ICollection<UserTable> UserTables { get; set; }
+        public virtual ICollection<Usertable> Usertables { get; set; }
     }
 }
